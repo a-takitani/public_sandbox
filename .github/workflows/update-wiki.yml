@@ -37,7 +37,7 @@ jobs:
       - name: Generate Markdown Document from OpenAPI spec
         run: |
           npx @openapitools/openapi-generator-cli generate \
-            -g markdown \
+            -g html \
             -i ./build/openapi.json \
             -o .wiki
 
@@ -46,6 +46,7 @@ jobs:
         id: staging
         run: |
           git add *.md Models/*.md Apis/*.md
+          git add index.html
           echo "NUM_OF_STAGED=$(git diff --staged --name-only | wc -l)" >> $GITHUB_OUTPUT   
 
       - name: Commit wiki pages
