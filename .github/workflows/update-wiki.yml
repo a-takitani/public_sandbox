@@ -41,7 +41,7 @@ jobs:
             -i ./build/openapi.json \
             -o .wiki
 
-      - name: Clone and update Wiki
+      - name: Stage changes
         working-directory: .wiki
         id: staging
         run: |
@@ -52,7 +52,7 @@ jobs:
         working-directory: .wiki
         if: steps.staging.outputs.NUM_OF_STAGED > 0
         run: |
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git config user.name "github-actions[bot]"
           git commit -m "update with ${GITHUB_REF}"
           git push          
