@@ -1,3 +1,9 @@
 spring:
   application:
     name: sandbox-app
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
