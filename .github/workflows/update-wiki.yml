@@ -41,6 +41,10 @@ jobs:
             -i ./build/openapi.json \
             -o .wiki
 
+      - name: Fix Markdown links for GitHub Wiki
+        run: |
+          find ./wiki -type f -name "*.md" -exec sed -i -E 's/\((.*\/)?([^/]+)\.md(#.*)?\)/(\2\3)/g' {} +
+
       - name: Stage changes
         working-directory: .wiki
         id: staging
