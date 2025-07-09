@@ -45,7 +45,7 @@ jobs:
         working-directory: .wiki
         id: staging
         run: |
-          git add *.md
+          git add **.md
           echo "NUM_OF_STAGED=$(git diff --staged --name-only | wc -l)" >> $GITHUB_OUTPUT   
 
       - name: Commit wiki pages
