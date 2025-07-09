@@ -54,5 +54,5 @@ jobs:
         run: |
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git config user.name "github-actions[bot]"
-          git commit -m "update with ${GITHUB_REF}"
+          git commit -m "update with ${GITHUB_SHA}"
           git push          
