@@ -1,0 +1,58 @@
+name: Update GitHub Wiki
+
+on:
+  push:
+    branches:
+      - main
+#    paths:
+#      - 'src/main/java/app/sandbox/presentation/**'
+
+jobs:
+  update-wiki:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main repository
+        uses: actions/checkout@v4
+
+      - name: setup jdk
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: setup gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: create openapi document
+        run: ./gradlew generateOpenApiDocs
+
+      - name: Check out wiki repo
+        uses: actions/checkout@v4
+        with:
+          repository: '${{ github.repository }}.wiki'
+          path: .wiki
+
+      - name: Generate Markdown Document from OpenAPI spec
+        run: |
+          npx @openapitools/openapi-generator-cli generate \
+            -g markdown \
+            -i ./build/openapi.json \
+            -o .wiki
+
+      - name: Clone and update Wiki
+        working-directory: .wiki
+        id: staging
+        run: |
+          git add *.md
+          echo "NUM_OF_STAGED=$(git diff --staged --name-only | wc -l)" >> $GITHUB_OUTPUT   
+
+      - name: Commit wiki pages
+        working-directory: .wiki
+        if: steps.staging.outputs.NUM_OF_STAGED > 0
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git commit -m "update with ${GITHUB_REF}"
+          git push          
